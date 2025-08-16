@@ -12,9 +12,8 @@ const generateUserId = (length = 8) => {
     return id;
 };
 
-
 exports.register = async (req, res) => {
-    const { name, email, phone, password, role } = req.body;
+    const { name, email, phone, password } = req.body;
 
     if (!name || !email || !phone || !password) {
         return res.status(400).json({ message: "Name, email, phone, and password are required" });
@@ -38,7 +37,6 @@ exports.register = async (req, res) => {
         }
 
         const hashedPassword = await bcrypt.hash(password, 8);
-        const userRole = role === "admin" ? "admin" : "user";
 
         const newUser = await User.create({
             id: userId,
@@ -48,7 +46,7 @@ exports.register = async (req, res) => {
             password: hashedPassword,
             level: 1,
             payment_verified: false,
-            role: userRole
+            role: "user"
         });
 
         res.status(201).json({ message: "User registered successfully", userId: newUser.id });
